@@ -1,10 +1,12 @@
 import React from 'react'
+import Banner from './Banner.jsx'
+
 
 const Home = () => {
   return (
-    <div>
-      Home page
-    </div>
+    <>
+    <Banner/>
+    </>
   )
 }
 
