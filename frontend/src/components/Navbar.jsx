@@ -11,7 +11,7 @@ const Navbar = () => {
         className="fixed top-0 left-0 w-full shadow-md z-50"
         style={{ backgroundColor: "rgb(19, 154, 232)" }}
       >
-        <nav className="max-w-screen-2xl mx-auto px-6 md:px-10 flex justify-between items-center h-20">
+        <nav className="max-w-screen-2xl mx-auto px-12 md:px-16 flex justify-between items-center h-20">
           {/* Logo */}
           <div className="nav__logo">
             <Link
