@@ -13,12 +13,14 @@ const Categories = () => {
   ];
 
   return (
-    <section className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-6">
+    <section className="max-w-screen-2xl  mx-auto  py-20 px-12 md:px-16 bg-gray-50">
+      <div className=" px-6">
         {/* Section Title */}
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-gray-800">
           Shop by <span className="text-pink-500">Category</span>
         </h2>
+
+      
 
         {/* Category Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
@@ -29,13 +31,11 @@ const Categories = () => {
               className="relative group perspective rounded-3xl shadow-lg overflow-hidden transition-all duration-500 hover:shadow-2xl"
             >
               {/* Image */}
-              <div className="w-full h-72 overflow-hidden rounded-3xl">
+              <div className="w-full h-52 overflow-hidden rounded-3xl">
                 <img
-
-                  src={cat.image}
-                  
+                  src={cat.image}              
                   alt={cat.name}
-                  className="w-full h-full object-cover transform transition-transform duration-700 ease-in-out group-hover:scale-110 group-hover:rotate-1"
+                  className="w-full h-full object-cover transform transition-transform duration-700 ease-in-out group-hover:scale-110 group-hover:rotate-2"
                 />
               </div>
 
