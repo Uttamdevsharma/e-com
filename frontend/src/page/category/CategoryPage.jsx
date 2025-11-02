@@ -1,5 +1,9 @@
 import { useParams } from "react-router-dom";
 import ProductCards from "../shop/ProductCards";
+import { useEffect, useState } from "react";
+import products from '../../data/products.json'
+
+
 
 const CategoryPage = () => {
   const { categoryName } = useParams();
@@ -7,9 +11,19 @@ const CategoryPage = () => {
     ? categoryName.charAt(0).toUpperCase() + categoryName.slice(1)
     : "Category";
 
+
+    const [filterProducts,setFilterProducts] = useState([]);
+
+    useEffect(() => {
+       const filtered = products.filter((product) => product.category === categoryName.toLowerCase());
+       setFilterProducts(filtered)
+    },[])
+
+
+
   return (
-    <div className="min-h-screen bg-gray-50 px-6 md:px-16 pt-24">
-      
+    <div className="max-w-screen-2xl bg-gray-50 px-12 md:px-16 pt-24 md:pt-30">
+
       {/* Page Heading */}
       <div className="max-w-7xl mx-auto text-center">
         <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 tracking-tight mb-4">
@@ -22,7 +36,7 @@ const CategoryPage = () => {
 
       {/* All Proudct show */}
       <div className="mt-12">
-        <ProductCards />
+        <ProductCards products={filterProducts} />
       </div>
 
     </div>

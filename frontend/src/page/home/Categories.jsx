@@ -12,9 +12,10 @@ const Categories = () => {
     { id: 4, name: "Cosmetics", path: "cosmetics", image: category4 },
   ];
 
+  
   return (
-    <section className="max-w-screen-2xl  mx-auto  py-20 px-12 md:px-16 bg-gray-50">
-      <div className=" px-6">
+    <section className="max-w-screen-2xl  mx-auto  py-20 px-32 md:px-36 ">
+      <div className="">
         {/* Section Title */}
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-gray-800">
           Shop by <span className="text-pink-500">Category</span>

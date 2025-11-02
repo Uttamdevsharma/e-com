@@ -3,8 +3,8 @@ import bannerImg from "../../assets/hero.png";
 const Banner = () => {
   return (
     // Outer container to control width
-    <div className="max-w-screen-2xl mx-auto  px-12 md:px-16">
-      <section className="relative pt-28 md:pt-32 bg-gray-100 rounded-lg w-full  grid md:grid-cols-[3fr_2fr] gap-8 items-start shadow-lg min-h-[500px] md:min-h-[650px] ">
+    <div className="max-w-screen-2xl mx-auto   px-12 md:px-16">
+      <section className="relative px-6 sm:px-10 pt-28 md:pt-32 rounded-lg w-full  grid md:grid-cols-[3fr_2fr] gap-8 items-start shadow-lg min-h-[500px] md:min-h-[650px] ">
         {/* Text Content */}
         <div className="text-center md:text-left md:ml-27   text-gray-900 mt-22">
           <h4 className="text-pink-500 font-medium mb-2 uppercase tracking-wide">
