@@ -4,6 +4,7 @@ import Home from '../page/home/Home.jsx'
 import ShopPage from '../page/shop/ShopPage.jsx'
 import CategoryPage from '../page/category/CategoryPage.jsx'
 import Login from '../components/Login.jsx'
+import Register from '../components/Register.jsx'
 
 
 const router = createBrowserRouter([
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
     {
         path : '/login',
         element : <Login/>
+    },
+    {
+        path : '/register',
+        element : <Register/>
     }
 ])
 
