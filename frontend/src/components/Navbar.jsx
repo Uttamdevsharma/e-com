@@ -73,8 +73,11 @@ const Navbar = () => {
                 0
               </span>
             </button>
-
-            <i className="ri-user-line text-xl md:text-2xl cursor-pointer text-white hover:text-yellow-300 transition-colors duration-200"></i>
+            <span>
+              <Link to="/login" >
+                <i className="ri-user-line text-xl md:text-2xl cursor-pointer text-white hover:text-yellow-300 transition-colors duration-200"></i>
+              </Link>
+            </span>
 
             {/* Hamburger */}
             <button

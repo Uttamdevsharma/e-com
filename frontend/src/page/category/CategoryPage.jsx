@@ -17,6 +17,7 @@ const CategoryPage = () => {
     useEffect(() => {
        const filtered = products.filter((product) => product.category === categoryName.toLowerCase());
        setFilterProducts(filtered)
+       window.scrollTo(0,0)
     },[])
 
 
