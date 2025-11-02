@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 const Login = () => {
 
-    const [message,setMessage] = useState('Please Provide a valid email and password!')
+    const [message,setMessage] = useState('')
   return (
     <>
     <section className='h-screen flex items-center justify-center'>
