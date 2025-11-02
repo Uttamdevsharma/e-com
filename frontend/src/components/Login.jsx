@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 const Login = () => {
+
+    const [message,setMessage] = useState('Please Provide a valid email and password!')
   return (
     <>
     <section className='h-screen flex items-center justify-center'>
@@ -11,6 +13,12 @@ const Login = () => {
             <form action="" className='pt-5 space-y-5 max-w-sm mx-auto'>
                 <input  type="email" placeholder='your email'  className='w-full bg-gray-200 focus:outline-none px-5 py-3'  />
                 <input  type="password" placeholder='your password'  className='w-full bg-gray-200 focus:outline-none px-5 py-3'  />
+
+                {
+                    message && (
+                        <p className='text-red-500 font-semibold'>{message}</p>
+                    )
+                }
 
                 <button className='w-full bg-red-500 text-white flex justify-center items-center py-2 hover:bg-red-600'>Login</button>
             </form>
