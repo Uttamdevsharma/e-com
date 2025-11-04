@@ -15,6 +15,13 @@ const userSchema = new Schema({
     createdAt : {type:Date , default:Date.now}
 })
 
+//check if EMAIL IS TAKEN - model level helper
+userSchema.statics.isEmailTaken = async function(email) {
+    const user = await this.findOne({email});
+
+    return !!user;
+}
+
 
 const User = model('User' , userSchema);
 
