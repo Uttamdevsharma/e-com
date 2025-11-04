@@ -57,11 +57,23 @@ const userLogin =  async(req,res) => {
             'minute'
         )
 
+
+
+
         const accessToken = await generateToken(user._id,
             user.role,
             accessTokenExpires,
             "access"
         )
+
+
+        // 🍪 Save token in cookie
+        res.cookie("accessToken", accessToken, {
+          httpOnly: true, // prevents JS access (more secure)
+          secure: process.env.NODE_ENV === "production", // https only in prod
+          sameSite: "strict",
+          maxAge: process.env.JWT_ACCESS_EXPIRATION_MINUTES * 60 * 1000, // convert min → ms
+        });
 
         res.status(200).send({
             message : "Logged in successfully",
@@ -79,8 +91,9 @@ const userLogin =  async(req,res) => {
 
 
     }catch(error){
-        res.send({
-            error
+        console.error(error); // log server side
+        res.status(500).json({
+            message: "Internal server error"
         })
     }
     
