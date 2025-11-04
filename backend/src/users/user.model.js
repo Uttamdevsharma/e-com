@@ -16,6 +16,14 @@ const userSchema = new Schema({
     createdAt : {type:Date , default:Date.now}
 })
 
+
+
+//check if password match or not
+userSchema.methods.isPasswordMatch = async function(password){
+    const user =  this 
+    return bcrypt.compare(user.password , password)
+}
+
 //check if EMAIL IS TAKEN - model level helper
 userSchema.statics.isEmailTaken = async function(email) {
     const user = await this.findOne({email});

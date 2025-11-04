@@ -1,4 +1,5 @@
 const User = require("./user.model");
+const moment = require('moment')
 
 
 
@@ -38,6 +39,38 @@ const userRegistration = async(req,res) => {
     }
 }
 
+const userLogin =  async(req,res) => {
+    const {email , password} = req.body
+
+    try{
+        const user = await  User.findOne({email})
+
+        if(!user || !(await user.isPasswordMatch(password))){
+            return res.status(401).send({
+                message : "Incorrect email or password"
+            })
+        }
+
+        const accessTokeExpires = moment.add(process.env.JWT_ACCESS_EXPIRATION_MINUTES,
+            'minute'
+        )
+
+        const accesToken = await genrateToken(user._id,
+            user.role,
+            accessTokeExpires,
+            "access"
+        )
+
+
+    }catch(error){
+        res.send({
+            error
+        })
+    }
+    
+}
+
 module.exports = {
-    userRegistration
+    userRegistration,
+    userLogin
 }
