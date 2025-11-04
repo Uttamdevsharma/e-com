@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose')
+const bcrypt = require('bcrypt')
 
 const userSchema = new Schema({
 
@@ -22,6 +23,18 @@ userSchema.statics.isEmailTaken = async function(email) {
     return !!user;
 }
 
+
+//hash password befor saving the user(instance level helper)
+
+userSchema.pre("save" , async function(next) {
+    const user = this;
+    if(user.isModified('password')){
+        user.password = await bcrypt.hash(user.password,10)
+    }
+    next()
+
+
+})
 
 const User = model('User' , userSchema);
 

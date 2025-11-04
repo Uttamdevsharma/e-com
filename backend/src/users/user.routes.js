@@ -9,7 +9,11 @@ router.post('/register',async(req,res) => {
 
     try {
 
-       
+        if(await User.isEmailTaken(email)){
+            return res.status(400).send({
+                message : "Email Already Taken"
+            })
+        }
 
         const user = new User({
             username,
