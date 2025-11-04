@@ -2,7 +2,7 @@ const jwt = require ('jsonwebtoken')
 const moment = require('moment')
 
 
-const genrateToken = (
+const generateToken = (
     userId,
     role,
     expires ,
@@ -22,5 +22,5 @@ const genrateToken = (
 }
 
 module.exports = {
-    genrateToken
+    generateToken
 }

@@ -20,8 +20,8 @@ const userSchema = new Schema({
 
 //check if password match or not
 userSchema.methods.isPasswordMatch = async function(password){
-    const user =  this 
-    return bcrypt.compare(user.password , password)
+    const user =  this;
+    return bcrypt.compare(password,user.password)
 }
 
 //check if EMAIL IS TAKEN - model level helper

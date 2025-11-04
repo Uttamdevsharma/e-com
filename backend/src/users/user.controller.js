@@ -1,8 +1,9 @@
+const { generateToken } = require("../service/token.service");
 const User = require("./user.model");
 const moment = require('moment')
 
 
-
+//register
 const userRegistration = async(req,res) => {
     const {username,email,password} = req.body
 
@@ -26,7 +27,7 @@ const userRegistration = async(req,res) => {
             message : "User Registered Succesfully",
             data : {
                 id: user._id,
-                username: user.name,
+                username: user.username,
                 email : user.email
             }
 
@@ -39,6 +40,7 @@ const userRegistration = async(req,res) => {
     }
 }
 
+//login
 const userLogin =  async(req,res) => {
     const {email , password} = req.body
 
@@ -51,19 +53,19 @@ const userLogin =  async(req,res) => {
             })
         }
 
-        const accessTokeExpires = moment.add(process.env.JWT_ACCESS_EXPIRATION_MINUTES,
+        const accessTokenExpires = moment().add(process.env.JWT_ACCESS_EXPIRATION_MINUTES,
             'minute'
         )
 
-        const accesToken = await genrateToken(user._id,
+        const accessToken = await generateToken(user._id,
             user.role,
-            accessTokeExpires,
+            accessTokenExpires,
             "access"
         )
 
         res.status(200).send({
             message : "Logged in successfully",
-            accesToken,
+            accessToken,
             user: {
                 _id : user._id,
                 username : user.username,
@@ -71,7 +73,7 @@ const userLogin =  async(req,res) => {
                 role: user.role,
                 profileImage: user.profileImage,
                 bio: user.bio,
-                professtion : user.profession
+                profession : user.profession
             }
         })
 
