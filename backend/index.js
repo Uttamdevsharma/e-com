@@ -10,6 +10,10 @@ app.use(express.json())
 app.use(cors())
 
 
+const userRoutes = require('./src/users/user.routes.js')
+app.use('/api/auth',userRoutes)
+
+
 //mongoose connect with mongodb
 
 const uri = process.env.DB_URL
