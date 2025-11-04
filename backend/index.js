@@ -7,7 +7,10 @@ const cors = require('cors')
 
 //middleware
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+  origin: 'http://localhost:5173', // frontend URL
+  credentials: true
+}));
 
 
 const userRoutes = require('./src/users/user.routes.js')
