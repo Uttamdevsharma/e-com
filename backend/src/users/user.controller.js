@@ -61,6 +61,20 @@ const userLogin =  async(req,res) => {
             "access"
         )
 
+        res.status(200).send({
+            message : "Logged in successfully",
+            accesToken,
+            user: {
+                _id : user._id,
+                username : user.username,
+                email: user.email,
+                role: user.role,
+                profileImage: user.profileImage,
+                bio: user.bio,
+                professtion : user.profession
+            }
+        })
+
 
     }catch(error){
         res.send({
