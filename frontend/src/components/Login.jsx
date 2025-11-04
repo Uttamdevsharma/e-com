@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useLoginUserMutation } from "../redux/features/auth/authApi";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
   const [message, setMessage] = useState("");
@@ -13,6 +14,7 @@ const Login = () => {
 
   const [loginUser, { isLoading, error }] = useLoginUserMutation();
   const navigate = useNavigate();
+  const dispatch = useDispatch()
 
   const onSubmit = async (data) => {
     try {
@@ -58,8 +60,8 @@ const Login = () => {
 
             {message && <p className="text-red-500 font-semibold">{message}</p>}
 
-            <button className="w-full bg-red-500 text-white flex justify-center items-center py-2 hover:bg-red-600">
-              Login
+            <button type="submit" disabled={isLoading} className="w-full bg-red-500 text-white flex justify-center items-center py-2 hover:bg-red-600">
+              {isLoading ? "Login..." : "Login"}
             </button>
           </form>
           <div className="text-center mt-2">
