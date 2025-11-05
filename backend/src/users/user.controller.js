@@ -107,17 +107,35 @@ const userLogout = async (req, res) => {
   }
 };
 
-//get All user
+//get All user (by admin)
 const getAllUsers = async(req,res) => {
 
     const response  =  await User.find({},"email role username")
     sendSuccess(res,200,"All user fetched successfully", response)
 }
 
+//delete users(by admin)
+const deleteUser = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findByIdAndDelete(id);
+
+    if (!user) {
+      return sendError(res, 404, "User not found");
+    }
+
+    return sendSuccess(res, 200, "User deleted successfully", { user });
+  } catch (error) {
+    return sendError(res, 500, "Failed to delete user", error);
+  }
+};
+
 module.exports = {
   userRegistration,
   userLogin,
   userLogout,
-  getAllUsers
+  getAllUsers,
+  deleteUser
 
 };
