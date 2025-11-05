@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useLoginUserMutation } from "../redux/features/auth/authApi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "../redux/features/auth/authSlice";
 
 const Login = () => {
+ 
   const [message, setMessage] = useState("");
   const {
     register,
@@ -19,8 +21,9 @@ const Login = () => {
   const onSubmit = async (data) => {
     try {
       const response = await loginUser(data).unwrap();
-      console.log(response)
+      const {token,user} = response;
       alert("Login successfull");
+      dispatch((setUser({user})))
       navigate("/");
     } catch (error) {
       setMessage(error?.data?.message)

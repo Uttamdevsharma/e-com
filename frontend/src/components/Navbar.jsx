@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import avatarImg from "../assets/avatar.png";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const { user } = useSelector((state) => state.auth);
 
   return (
     <>
@@ -74,9 +78,15 @@ const Navbar = () => {
               </span>
             </button>
             <span>
-              <Link to="/login" >
-                <i className="ri-user-line text-xl md:text-2xl cursor-pointer text-white hover:text-yellow-300 transition-colors duration-200"></i>
-              </Link>
+              {user ? (
+                <>
+                  <img src={user?.profileImg || avatarImg} alt="" className="size-8 bg-white rounded-full cursor-pointer" />
+                </>
+              ) : (
+                <Link to="/login">
+                  <i className="ri-user-line text-xl md:text-2xl cursor-pointer text-white hover:text-yellow-300 transition-colors duration-200"></i>
+                </Link>
+              )}
             </span>
 
             {/* Hamburger */}
