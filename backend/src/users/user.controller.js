@@ -107,8 +107,17 @@ const userLogout = async (req, res) => {
   }
 };
 
+//get All user
+const getAllUsers = async(req,res) => {
+
+    const response  =  await User.find({},"email role username")
+    sendSuccess(res,200,"All user fetched successfully", response)
+}
+
 module.exports = {
   userRegistration,
   userLogin,
   userLogout,
+  getAllUsers
+  
 };
