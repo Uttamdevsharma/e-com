@@ -100,19 +100,26 @@ const userLogin =  async(req,res) => {
 }
 
 //logout
-const userLogout = async(req,res) =>{
-    try{
-        res.clearCookie("accessToken")
-        res.status(200).send({
-            message : "Logout Succesfully"
-        })
-    }catch(error) {
-        res.status(500).send({
-            message : "Lougout failed",
-            error
-        })
+const userLogout = async (req, res) => {
+    try {
+      res.clearCookie("accessToken", {
+        httpOnly: true,
+        sameSite: "strict",
+        secure: process.env.NODE_ENV === "production",
+      });
+  
+      res.status(200).json({
+        success: true,
+        message: "Logout successfully",
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Logout failed",
+        error: error.message,
+      });
     }
-}
+  };
 
 module.exports = {
     userRegistration,

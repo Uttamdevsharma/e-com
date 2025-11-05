@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useLoginUserMutation } from "../redux/features/auth/authApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../redux/features/auth/authSlice";
+import toast from "react-hot-toast";
 
 const Login = () => {
  
@@ -22,11 +23,12 @@ const Login = () => {
     try {
       const response = await loginUser(data).unwrap();
       const {token,user} = response;
-      alert("Login successfull");
+      toast.success("Login Successfull")
       dispatch((setUser({user})))
       navigate("/");
     } catch (error) {
-      setMessage(error?.data?.message)
+      const errmsg = error?.data?.message
+      toast.error(errmsg)
     }
   };
 

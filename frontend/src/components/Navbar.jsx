@@ -1,7 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import avatarImg from "../assets/avatar.png";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useLogoutUserMutation } from "../redux/features/auth/authApi";
+import { logout } from "../redux/features/auth/authSlice";
+import toast from "react-hot-toast";
+
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -30,9 +34,21 @@ const Navbar = () => {
   const dropdownmenus =
     user?.role === "admin" ? [...adminDropdownMenus] : [...userDropdownMenus];
 
+   const [logoutUser] = useLogoutUserMutation()
+   const dispatch = useDispatch()
+   const navigate = useNavigate()
+    const handleLogout = async() => {
+      try{
+        await logoutUser().unwrap()
+        dispatch(logout())
+        setIsDropDownOpen(false);
+        toast.success("Logout Successfully")
+        navigate('/')
 
-    const handleLogout = () => {
-      
+      }catch(err){
+        const errmsg = err?.data?.message
+        toast.error(errmsg)
+      }
     }
 
   return (
