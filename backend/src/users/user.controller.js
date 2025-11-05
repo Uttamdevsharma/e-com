@@ -131,11 +131,32 @@ const deleteUser = async (req, res) => {
   }
 };
 
+
+//user update(by admin)
+const userUpdate = async (req, res) => {
+  const { id } = req.params;
+  const { role } = req.body;
+
+  try {
+    const user = await User.findByIdAndUpdate(id, { role }, { new: true });
+
+    if (!user) {
+      return sendError(res, 404, "User not found");
+    }
+
+    return sendSuccess(res, 200, "User updated successfully", { user });
+  } catch (error) {
+    return sendError(res, 500, "Failed to update user", error);
+  }
+};
+
+
 module.exports = {
   userRegistration,
   userLogin,
   userLogout,
   getAllUsers,
-  deleteUser
+  deleteUser,
+  userUpdate
 
 };
