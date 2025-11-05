@@ -10,4 +10,8 @@ router.post('/register',userRegistration);
 //login
 router.post('/login' ,userLogin)
 
+
+//logout
+router.post('/logout' , userLogout)
+
 module.exports =router

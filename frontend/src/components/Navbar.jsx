@@ -5,8 +5,35 @@ import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isDropDownOpen, setIsDropDownOpen] = useState(false);
+
+  const handleToggle = () => {
+    setIsDropDownOpen(!isDropDownOpen);
+  };
 
   const { user } = useSelector((state) => state.auth);
+
+  const userDropdownMenus = [
+    { label: "Dashboard", path: "/dashboard" },
+    { label: "Profile", path: "/dashboard/profile" },
+    { label: "Payments", path: "/dashboard/payments" },
+    { label: "Orders", path: "/dashboard/orders" },
+  ];
+
+  const adminDropdownMenus = [
+    { label: "Dashboard", path: "/dashboard/admin" },
+    { label: "Manage Items", path: "/dashboard/manage-products" },
+    { label: "All Orders", path: "/dashboard/manage-orders" },
+    { label: "Add Product", path: "/dashboard/add-product" },
+  ];
+
+  const dropdownmenus =
+    user?.role === "admin" ? [...adminDropdownMenus] : [...userDropdownMenus];
+
+
+    const handleLogout = () => {
+      
+    }
 
   return (
     <>
@@ -77,10 +104,32 @@ const Navbar = () => {
                 0
               </span>
             </button>
-            <span>
+            <span className="relative">
               {user ? (
                 <>
-                  <img src={user?.profileImg || avatarImg} alt="" className="size-8 bg-white rounded-full cursor-pointer" />
+                  <img
+                    onClick={handleToggle}
+                    src={user?.profileImg || avatarImg}
+                    alt=""
+                    className="size-8 bg-white rounded-full cursor-pointer"
+                  />
+
+                  {isDropDownOpen && (
+                    <div className="absolute right-0 mt-3 p-4 w-48 bg-white border  border-gray-200 rounded-lg shadow-lg z-50">
+                      <ul className="space-y-4">
+                        {dropdownmenus.map((menu, index) => (
+                          <li key={index}>
+                            <Link to={menu.path} className="dropdown-items">
+                              {menu.label}
+                            </Link>
+                          </li>
+                        ))}
+                        <li>
+                          <Link onClick={handleLogout} className="dropdown-items">Logout</Link>
+                        </li>
+                      </ul>
+                    </div>
+                  )}
                 </>
               ) : (
                 <Link to="/login">

@@ -99,7 +99,23 @@ const userLogin =  async(req,res) => {
     
 }
 
+//logout
+const userLogout = async(req,res) =>{
+    try{
+        res.clearCookie("accessToken")
+        res.status(200).send({
+            message : "Logout Succesfully"
+        })
+    }catch(error) {
+        res.status(500).send({
+            message : "Lougout failed",
+            error
+        })
+    }
+}
+
 module.exports = {
     userRegistration,
-    userLogin
+    userLogin,
+    userLogout
 }
