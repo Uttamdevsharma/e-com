@@ -150,6 +150,25 @@ const userUpdate = async (req, res) => {
   }
 };
 
+//update user proFile
+const updateProfile = async (req, res) => {
+  const { id } = req.params;
+  const { username, profileImage, profession, bio } = req.body;
+
+  try {
+    const updateFields = { username, profileImage, profession, bio };
+
+    const user = await User.findByIdAndUpdate(id, updateFields, { new: true });
+
+    if (!user) {
+      return sendError(res, 404, "User not found");
+    }
+
+    return sendSuccess(res, 200, "User profile updated successfully", { user });
+  } catch (error) {
+    return sendError(res, 500, "Failed to update user profile", error);
+  }
+};
 
 module.exports = {
   userRegistration,
@@ -157,6 +176,7 @@ module.exports = {
   userLogout,
   getAllUsers,
   deleteUser,
-  userUpdate
+  userUpdate,
+  updateProfile
 
 };

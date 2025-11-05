@@ -1,5 +1,5 @@
 const express = require('express');
-const { userRegistration, userLogin, userLogout, getAllUsers, deleteUser, userUpdate } = require('./user.controller');
+const { userRegistration, userLogin, userLogout, getAllUsers, deleteUser, userUpdate, updateProfile } = require('./user.controller');
 const verifyToken = require('../middleware/auth.middleware.js');
 const isAdmin = require('../middleware/role.middleware.js');
 const router = express.Router()
@@ -26,5 +26,8 @@ router.delete('/users/:id' ,verifyToken, isAdmin, deleteUser)
 
 //update user (by admin)
 router.put('/users/:id' ,verifyToken, isAdmin, userUpdate)
+
+//update user proFiles
+router.patch("/users/:id" , verifyToken,updateProfile)
 
 module.exports =router
