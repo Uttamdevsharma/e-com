@@ -27,7 +27,7 @@ const Login = () => {
       dispatch((setUser({user})))
       navigate("/");
     } catch (error) {
-      const errmsg = error?.data?.message
+      const errmsg = error?.data?.message  || "Something went wrong!"
       toast.error(errmsg)
     }
   };
