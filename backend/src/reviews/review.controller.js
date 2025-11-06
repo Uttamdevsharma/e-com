@@ -1,5 +1,6 @@
 const { sendError, sendSuccess } = require("../utils/responseHandler");
 const Review = require("./review.model");
+const Product = require("../products/product.model");
 
 const postReview = async (req, res) => {
   try {
@@ -9,7 +10,9 @@ const postReview = async (req, res) => {
       return sendError(res, 400, "Missing Required Fields");
     }
 
+    // 1️⃣ Create or update review
     const existingReview = await Review.findOne({ userId, productId });
+
     if (existingReview) {
       existingReview.comment = comment;
       existingReview.rating = rating;
@@ -21,41 +24,31 @@ const postReview = async (req, res) => {
         userId,
         productId,
       });
-
       await newReview.save();
-
-      return sendSuccess(res, 200, "Review created Successfully");
     }
 
+    // 2️⃣ Calculate new average rating
     const reviews = await Review.find({ productId });
 
     if (reviews.length > 0) {
-      // Calculate average rating
-      const totalRating = reviews.reduce(
-        (acc, review) => acc + review.rating,
-        0
-      );
+      const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0);
       const averageRating = totalRating / reviews.length;
 
-      // Find the product and update its rating
-      const product = await Products.findById(productId);
-
+      // 3️⃣ Update product rating
+      const product = await Product.findById(productId);
       if (product) {
         product.rating = averageRating;
         await product.save({ validateBeforeSave: false });
-
-        return successResponse(res, 200, "Review posted successfully");
-      } else {
-        return errorResponse(res, 404, "Product not found");
       }
-    } else {
-      return errorResponse(res, 400, "No reviews to post");
     }
+
+    // 4️⃣ Final success response
+    return sendSuccess(res, 200, "Review posted and product rating updated");
+
   } catch (error) {
-    return sendError(res, 500, "valid post a review");
+    console.log(error);
+    return sendError(res, 500, "Something went wrong while posting review");
   }
 };
 
-module.exports = {
-  postReview,
-};
+module.exports = { postReview };
