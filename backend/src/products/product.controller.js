@@ -90,8 +90,10 @@ const getSingleProduct = async (req, res) => {
       return sendError(res, 4500, "Product Not Found", error);
     }
 
+    const reviews  = await Review.find({productId: id})
     return sendSuccess(res, 200, "Product fetched successfully", {
       product,
+      reviews
     });
   } catch (error) {
     return sendError(res, 500, "Failed to get this products", error);
