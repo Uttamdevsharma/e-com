@@ -20,6 +20,9 @@ const productRoutes = require('./src/products/product.routes.js')
 app.use('/api/products',productRoutes)
 
 
+const reviewRoutes = require('./src/reviews/review.route.js')
+app.use('/api/reviews',reviewRoutes)
+
 //mongoose connect with mongodb
 
 const uri = process.env.DB_URL
