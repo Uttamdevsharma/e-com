@@ -65,7 +65,7 @@ const getAllProducts = async (req, res) => {
     const products = await Product.find(filter)
       .skip(skip)
       .limit(parseInt(limit))
-      .populate('author',"username email role")
+      .populate("author", "username email role");
 
     return sendSuccess(res, 200, "Products fetched successfully", {
       products,
@@ -77,7 +77,73 @@ const getAllProducts = async (req, res) => {
   }
 };
 
+//get single product
+const getSingleProduct = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const product = await Product.findById(id).populate(
+      "author",
+      "username email"
+    );
+    if (!product) {
+      return sendError(res, 4500, "Product Not Found", error);
+    }
+
+    return sendSuccess(res, 200, "Product fetched successfully", {
+      product,
+    });
+  } catch (error) {
+    return sendError(res, 500, "Failed to get this products", error);
+  }
+};
+
+const updateSingleProduct = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const product = await Product.findByIdAndUpdate(id, { ...req.body });
+
+    if (!product) {
+      return sendError(res, 4500, "Product Not Found", error);
+    }
+
+    return sendSuccess(res, 200, "Product Updated successfully", {
+      product,
+    });
+  } catch (error) {
+    return sendError(res, 500, "Failed to update this products", error);
+  }
+};
+
+
+
+const deleteSingleProduct = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deleteProduct = await Product.findByIdAndDelete(id);
+
+    if (!deleteProduct) {
+      return sendError(res, 4500, "Product Not Found", error);
+    }
+
+    const reviewDelete = await Review.deleteMany({productId: id})
+
+    return sendSuccess(res, 200, "Product Updated successfully", {
+      deleteProduct,
+      reviewDelete
+    });
+
+
+  } catch (error) {
+    return sendError(res, 500, "Failed to delete this products", error);
+  }
+};
+
 module.exports = {
   createNewProduct,
-  getAllProducts
+  getAllProducts,
+  getSingleProduct,
+  updateSingleProduct,
+  deleteSingleProduct
 };
