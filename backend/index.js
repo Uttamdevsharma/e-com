@@ -16,6 +16,9 @@ app.use(cors({
 const userRoutes = require('./src/users/user.routes.js')
 app.use('/api/auth',userRoutes)
 
+const productRoutes = require('./src/products/product.routes.js')
+app.use('/api/products',productRoutes)
+
 
 //mongoose connect with mongodb
 
