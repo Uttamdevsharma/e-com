@@ -2,16 +2,16 @@ import { configureStore } from '@reduxjs/toolkit'
 import authApi from './features/auth/authApi'
 import authReducer from './features/auth/authSlice'
 import productApi from './features/products/productsApi'
+import reviewsApi from './features/reviews/reviesApi'
 
 export const store = configureStore({
     reducer: {
       [authApi.reducerPath]: authApi.reducer,
       auth : authReducer,
-      [productApi.reducerPath]: productApi.reducer,
-
-      
+      [productApi.reducerPath]: productApi.reducer,      
+      [reviewsApi.reducerPath]: reviewsApi.reducer,      
     },
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(authApi.middleware,productApi.middleware)
+      getDefaultMiddleware().concat(authApi.middleware,productApi.middleware,reviewsApi.middleware)
 
 })

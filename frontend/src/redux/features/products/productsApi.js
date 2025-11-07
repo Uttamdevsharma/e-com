@@ -4,33 +4,34 @@ import { getBaseUrl } from "../../../utils/gateBaseUrl";
 const productApi = createApi({
   reducerPath: "productsApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: `${getBaseUrl}/api/products`,
+    baseUrl: `${getBaseUrl()}/api/products`,
     credentials: "include",
   }),
   tagTypes: ["Products"],
   endpoints: (builder) => ({
     //fetch product by query 
     fetchAllProducts: builder.query({
-      query: ({
-        category,
-        color,
-        minPrice,
-        maxPrice,
-        page = 1,
-        limit = 10,
-      }) => {
-        const queryParams = URLSearchParams({
-          category: category || " ",
-          color: color || " ",
-          minPrice: minPrice || 0,
-          maxPrice: maxPrice || " ",
-          page: page.toString(),
-          limit: limit.toString(),
-        });
-        return `/${queryParams}`
-      },
-      providesTags: ['Products']
-    }),
+        query: ({
+          category = "all",
+          color = "all",
+          minPrice = 0,
+          maxPrice = "",
+          page = 1,
+          limit = 10,
+        } = {}) => {
+          const queryParams = new URLSearchParams({
+            category,
+            color,
+            minPrice,
+            maxPrice,
+            page: page.toString(),
+            limit: limit.toString(),
+          });
+          return `?${queryParams.toString()}`;
+        },
+        providesTags: ["Products"],
+      }),
+      
 
     //fetch product by id
     fetchProductById : builder.query({
@@ -74,7 +75,7 @@ const productApi = createApi({
   }),
 });
 
-const {useFetchAllProductsQuery , useAddProductMutation,useDeleteProductMutation,useFetchProductByIdQuery,useUpdateProductMutation} = productApi
+export const {useFetchAllProductsQuery , useAddProductMutation,useDeleteProductMutation,useFetchProductByIdQuery,useUpdateProductMutation} = productApi
 
 
 export default productApi
