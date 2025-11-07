@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import ProductCards from "./ProductCards";
 import { useFetchAllProductsQuery } from "../../redux/features/products/productsApi";
+import ShopFiltering from "./ShopFiltering";
 
 const filters = {
   categories: ["all", "accessories", "dress", "jewellery", "cosmetics"],
@@ -26,11 +27,7 @@ const ShopPage = () => {
 
   const [productsPerPage] = useState(8);
 
-  const {
-    data,
-    error,
-    isLoading,
-  } = useFetchAllProductsQuery({
+  const { data, error, isLoading } = useFetchAllProductsQuery({
     category: category !== "all" ? category : "",
     color: color !== "all" ? color : "",
     minPrice: isNaN(minPrice) ? "" : minPrice,
@@ -39,22 +36,27 @@ const ShopPage = () => {
     limit: productsPerPage,
   });
 
-
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Something went wrong</p>;
 
   const { products, totalPages, totalProducts } = data;
-
 
   const handlePageChange = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
     }
   };
-  
 
   const startProduct = (currentPage - 1) * productsPerPage + 1;
   const endProduct = startProduct + products.length - 1;
+
+  const clearFilters = () => {
+    setFiltersState({
+      category: "all",
+      color: "all",
+      priceRange: "",
+    });
+  };
 
   console.log(products);
 
@@ -71,9 +73,18 @@ const ShopPage = () => {
         </div>
 
         <div className="flex flex-col md:flex-row md:gap-12 gap-8">
+          //filters section
           <div>
-            <p>Categories</p>
+            <ShopFiltering
+              filters={filters}
+              filtersState={filtersState}
+              setFiltersState={setFiltersState}
+              clearFilters={clearFilters}
+            />
           </div>
+
+
+          //products grid
           <div>
             <h1 className="mb-4 px-12">
               Showing {startProduct} to {endProduct} of {totalProducts} Products
