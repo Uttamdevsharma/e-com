@@ -2,6 +2,7 @@ const Review = require("../reviews/review.model");
 const { sendError, sendSuccess } = require("../utils/responseHandler");
 const Product = require("./product.model");
 
+//create a new product 
 const createNewProduct = async (req, res) => {
   try {
     const product = new Product({
@@ -29,6 +30,7 @@ const createNewProduct = async (req, res) => {
   }
 };
 
+//get all product by query params
 const getAllProducts = async (req, res) => {
   try {
     const {
@@ -100,6 +102,7 @@ const getSingleProduct = async (req, res) => {
   }
 };
 
+//update single product(only product)
 const updateSingleProduct = async (req, res) => {
   const { id } = req.params;
   try {
@@ -118,7 +121,7 @@ const updateSingleProduct = async (req, res) => {
 };
 
 
-
+//delete a product(only admin)
 const deleteSingleProduct = async (req, res) => {
   const { id } = req.params;
 
