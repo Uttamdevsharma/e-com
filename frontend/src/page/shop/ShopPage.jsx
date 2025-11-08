@@ -28,7 +28,6 @@ const ShopPage = () => {
 
   const [productsPerPage] = useState(8);
 
-  
   const { data, error, isLoading } = useFetchAllProductsQuery({
     category: category !== "all" ? category : "",
     color: color !== "all" ? color : "",
@@ -37,7 +36,7 @@ const ShopPage = () => {
     page: currentPage,
     limit: productsPerPage,
   });
-  
+
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Something went wrong</p>;
 
@@ -59,7 +58,6 @@ const ShopPage = () => {
       priceRange: "",
     });
   };
-
 
   return (
     <>
@@ -84,7 +82,6 @@ const ShopPage = () => {
             />
           </div>
 
-
           {/* //products grid */}
           <div>
             <h1 className="mb-4 px-12">
@@ -93,35 +90,38 @@ const ShopPage = () => {
             <ProductCards products={products} />
 
             {/* pagination */}
-            <div className="mt-6 flex justify-center space-x-2">
-              <button
-                disabled={currentPage === 1}
-                onClick={() => handlePageChange(currentPage - 1)}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md"
-              >
-                Previous
-              </button>
-              {[...Array(totalPages)].map((_, index) => (
+
+            {products.length > 0 && (
+              <div className="mt-6 flex justify-center space-x-2">
                 <button
-                  onClick={() => handlePageChange(index + 1)}
-                  className={`px-4 py-2 rounded-md ${
-                    currentPage === index + 1
-                      ? "bg-blue-500 text-white"
-                      : "bg-gray-200 text-gray-700"
-                  } `}
-                  key={index}
+                  disabled={currentPage === 1}
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md"
                 >
-                  {index + 1}
+                  Previous
                 </button>
-              ))}
-              <button
-                disabled={currentPage === totalPages}
-                onClick={() => handlePageChange(currentPage + 1)}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md"
-              >
-                Next
-              </button>
-            </div>
+                {[...Array(totalPages)].map((_, index) => (
+                  <button
+                    onClick={() => handlePageChange(index + 1)}
+                    className={`px-4 py-2 rounded-md ${
+                      currentPage === index + 1
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200 text-gray-700"
+                    } `}
+                    key={index}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+                <button
+                  disabled={currentPage === totalPages}
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md"
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </section>
