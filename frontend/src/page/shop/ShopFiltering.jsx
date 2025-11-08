@@ -6,7 +6,8 @@ const ShopFiltering = ({ filters, filtersState, setFiltersState, clearFilters })
         <div className="flex flex-col space-y-2">
           <h4 className="font-medium text-lg">Category</h4>
           <hr />
-  
+
+          
           {filters.categories.map((category) => (
             <label key={category} className="flex items-center">
               <input

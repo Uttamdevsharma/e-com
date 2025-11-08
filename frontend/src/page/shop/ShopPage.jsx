@@ -22,11 +22,12 @@ const ShopPage = () => {
     priceRange: "",
   });
 
-  const { category, color, priceRange } = filtersState;
+  
   const [minPrice, maxPrice] = priceRange.split("-").map(Number);
 
   const [productsPerPage] = useState(8);
 
+  const { category, color, priceRange } = filtersState;
   const { data, error, isLoading } = useFetchAllProductsQuery({
     category: category !== "all" ? category : "",
     color: color !== "all" ? color : "",
@@ -58,7 +59,6 @@ const ShopPage = () => {
     });
   };
 
-  console.log(products);
 
   return (
     <>
@@ -73,7 +73,7 @@ const ShopPage = () => {
         </div>
 
         <div className="flex flex-col md:flex-row md:gap-12 gap-8">
-          //filters section
+          {/* //filters section */}
           <div>
             <ShopFiltering
               filters={filters}
@@ -84,7 +84,7 @@ const ShopPage = () => {
           </div>
 
 
-          //products grid
+          {/* //products grid */}
           <div>
             <h1 className="mb-4 px-12">
               Showing {startProduct} to {endProduct} of {totalProducts} Products
