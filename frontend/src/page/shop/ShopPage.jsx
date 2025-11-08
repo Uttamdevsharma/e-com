@@ -22,12 +22,13 @@ const ShopPage = () => {
     priceRange: "",
   });
 
-  
+  const { category, color, priceRange } = filtersState;
+
   const [minPrice, maxPrice] = priceRange.split("-").map(Number);
 
   const [productsPerPage] = useState(8);
 
-  const { category, color, priceRange } = filtersState;
+  
   const { data, error, isLoading } = useFetchAllProductsQuery({
     category: category !== "all" ? category : "",
     color: color !== "all" ? color : "",
@@ -36,7 +37,7 @@ const ShopPage = () => {
     page: currentPage,
     limit: productsPerPage,
   });
-
+  
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Something went wrong</p>;
 
@@ -94,7 +95,7 @@ const ShopPage = () => {
             {/* pagination */}
             <div className="mt-6 flex justify-center space-x-2">
               <button
-                disabled={currentPage === totalPages}
+                disabled={currentPage === 1}
                 onClick={() => handlePageChange(currentPage - 1)}
                 className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md"
               >
