@@ -80,6 +80,12 @@ const ShopFiltering = ({
         ))}
       </div>
 
+
+      {/* Clear Filter */}
+      <div>
+        <button onClick={() => clearFilters()} className="bg-red-600 text-white px-3 py-1 border-2 cursor-pointer hover:bg-red-800 ">Clear All filters</button>
+      </div>
+
     </div>
   );
 };
