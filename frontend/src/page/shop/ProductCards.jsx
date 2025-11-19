@@ -20,7 +20,6 @@ const ProductCards = ({ products = [] }) => {
           className="group bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-500 overflow-hidden "
         >
           {/* Image Section */}
-          {/* Image Section */}
           <div className="relative overflow-hidden">
             <Link to={`/shop/${product._id}`}>
               <img

@@ -5,6 +5,7 @@ import ShopPage from '../page/shop/ShopPage.jsx'
 import CategoryPage from '../page/category/CategoryPage.jsx'
 import Login from '../components/Login.jsx'
 import Register from '../components/Register.jsx'
+import SingleProduct from '../page/shop/productDetails/SingleProduct.jsx'
 
 
 const router = createBrowserRouter([
@@ -19,6 +20,11 @@ const router = createBrowserRouter([
             {
                 path:'/shop',
                 element:<ShopPage/>
+            },
+            {
+                path:'/shop/:id',
+                element: <SingleProduct/>
+
             },
             {
                 path: '/categories/:categoryName',
