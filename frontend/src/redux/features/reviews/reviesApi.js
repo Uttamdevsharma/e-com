@@ -30,12 +30,15 @@ const reviewsApi = createApi({
         query: (userId) => ({
           url: `/${userId}`
         }),
-        providesTags: (result) => result ? [{ type: 'Reviews', id: result[0]?.email }] : []
+        providesTags: (result) =>
+          result
+            ? result.map((review) => ({ type: 'Reviews', id: review.productId }))
+            : []
       })
     })
   });
   
-  const { 
+  export const { 
     useGetReviewByUserIdQuery, 
     useGetReviewsCountQuery, 
     usePostAReviewMutation 

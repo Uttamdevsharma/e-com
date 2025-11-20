@@ -8,7 +8,7 @@ const loadUserFromLocalStorage = () => {
   } catch (error) {
     return { user: null };
   }
-};
+}; 
 
 const initialState = loadUserFromLocalStorage();
 

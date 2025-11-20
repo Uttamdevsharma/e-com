@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import { useFetchProductByIdQuery } from "../../../redux/features/products/productsApi";
 import Loading from "../../../components/Loading";
 import StarRating from "../../../components/StarRating";
+import ReviewsCard from "../Reviews/ReviewsCard";
 
 
 const SingleProduct = () => {
@@ -10,7 +11,8 @@ const SingleProduct = () => {
   if (isLoading) return <Loading />;
   if (error) return <p className="text-center text-red-500">Something went wrong!</p>;
 
-  const product = data?.product;
+ const {product , reviews} = data
+
 
   return (
     <div className="pt-24 px-4 md:px-16 max-w-screen-2xl mb-20">
@@ -60,6 +62,13 @@ const SingleProduct = () => {
           <p className="text-gray-600">Category: {product?.category}</p>
           <p className="text-gray-600">Color: {product?.color}</p>
         </div>
+      </div>
+
+
+      {/* reviews card */}
+      <div className="mt-10">
+        <ReviewsCard productReviews = {reviews} />
+
       </div>
     </div>
   );
