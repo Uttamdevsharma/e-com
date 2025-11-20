@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { usePostAReviewMutation } from "../../../redux/features/reviews/reviesApi";
 import { useFetchProductByIdQuery } from "../../../redux/features/products/productsApi";
 import toast from "react-hot-toast";
@@ -16,11 +16,17 @@ const PostReview = ({ isModalOpen, setIsModalOpen }) => {
 
   const handleClose = () => setIsModalOpen(false);
   const handleRating = (value) => setRating(value);
+  const navigate =useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!user?._id) return toast.error("Please login to submit a review");
+    if (!user?._id){
+        toast.error("Please login to submit a review");
+        navigate('/login')
+
+    } 
+    
     if (!comment.trim()) return toast.error("Comment is required");
     if (rating < 1) return toast.error("Please select a rating");
 
@@ -30,8 +36,10 @@ const PostReview = ({ isModalOpen, setIsModalOpen }) => {
       userId: user._id,
       productId: id,
     };
+   
 
     try {
+        
       await postAReview(reviewData).unwrap();
       toast.success("Review posted successfully!");
       setComment("");
