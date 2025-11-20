@@ -17,7 +17,7 @@ router.get('/:id' , getSingleProduct)
 
 
 //update single product (only admin)
-router.patch('/:id',updateSingleProduct)
+router.patch('/update-product/:id',updateSingleProduct)
 
 //delete single product
 router.delete('/:id',deleteSingleProduct)

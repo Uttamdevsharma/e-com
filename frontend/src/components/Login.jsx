@@ -24,7 +24,7 @@ const Login = () => {
       const response = await loginUser(data).unwrap();
       const {token,user} = response;
       toast.success("Login Successfull")
-      dispatch((setUser({user})))
+      dispatch(setUser(user))
       navigate("/");
     } catch (error) {
       const errmsg = error?.data?.message  || "Something went wrong!"

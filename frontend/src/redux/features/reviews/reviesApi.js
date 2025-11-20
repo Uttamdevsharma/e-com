@@ -15,8 +15,8 @@ const reviewsApi = createApi({
           method: 'POST',
           body: reviewData
         }),
-        invalidatesTags: (result, error, { postId }) => [
-          { type: 'Reviews', id: postId }
+        invalidatesTags: (result, error, reviewData) => [
+          { type: 'Reviews', id: reviewData.productId }
         ]
       }),
   
@@ -30,10 +30,7 @@ const reviewsApi = createApi({
         query: (userId) => ({
           url: `/${userId}`
         }),
-        providesTags: (result) =>
-          result
-            ? result.map((review) => ({ type: 'Reviews', id: review.productId }))
-            : []
+        providesTags: (result, error, userId) => [{ type: 'Reviews', id: userId }],
       })
     })
   });

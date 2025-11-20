@@ -8,11 +8,12 @@ const postReview = async (req, res) => {
   try {
     const { comment, rating, userId, productId } = req.body;
 
-    if (!comment || rating === undefined || !userId || !productId) {
-      return sendError(res, 400, "Missing Required Fields");
+    // ✅ Validate required fields
+    if (!comment || rating === undefined || rating < 1 || rating > 5 || !userId || !productId) {
+      return res.status(400).json({ success: false, message: "Missing or invalid required fields" });
     }
 
-    // 1️⃣ Create or update review
+    // 1️⃣ Check if review exists → update or create
     const existingReview = await Review.findOne({ userId, productId });
 
     if (existingReview) {
@@ -20,38 +21,42 @@ const postReview = async (req, res) => {
       existingReview.rating = rating;
       await existingReview.save();
     } else {
-      const newReview = new Review({
-        comment,
-        rating,
-        userId,
-        productId,
-      });
-      await newReview.save();
+      await Review.create({ comment, rating, userId, productId });
     }
 
-    // 2️⃣ Calculate new average rating
+    // 2️⃣ Calculate & update average rating
     const reviews = await Review.find({ productId });
 
     if (reviews.length > 0) {
       const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0);
       const averageRating = totalRating / reviews.length;
 
-      // 3️⃣ Update product rating
-      const product = await Product.findById(productId);
-      if (product) {
-        product.rating = averageRating;
-        await product.save({ validateBeforeSave: false });
-      }
+      await Product.findByIdAndUpdate(
+        productId,
+        { rating: averageRating },
+        { validateBeforeSave: false }
+      );
     }
 
-    // 4️⃣ Final success response
-    return sendSuccess(res, 200, "Review posted and product rating updated");
+    // 3️⃣ Fetch reviews with user data populated
+    const populatedReviews = await Review.find({ productId }).populate("userId", "username email");
+
+    // 4️⃣ Return success
+    return res.status(200).json({
+      success: true,
+      message: "Review posted & reviews fetched successfully",
+      reviews: populatedReviews,
+    });
 
   } catch (error) {
-    console.log(error);
-    return sendError(res, 500, "Something went wrong while posting review");
+    console.error("Error in postReview:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong while posting review",
+    });
   }
 };
+
 
 const  getTotalReviewsCount = async(req,res) => {
     try{

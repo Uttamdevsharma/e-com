@@ -92,7 +92,7 @@ const getSingleProduct = async (req, res) => {
       return sendError(res, 4500, "Product Not Found", error);
     }
 
-    const reviews  = await Review.find({productId: id})
+    const reviews  = await Review.find({productId: id}).populate("userId", "username email")
     return sendSuccess(res, 200, "Product fetched successfully", {
       product,
       reviews
