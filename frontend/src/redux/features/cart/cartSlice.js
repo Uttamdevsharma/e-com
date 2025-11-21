@@ -6,6 +6,12 @@ const initialState ={
     totalPrice : 0
 }
 
+const productCartTotals = (products) => {
+    const totalCart = products.reduce((total,current) => total + current.quantity , 0)
+    const totalPrice = products.reduce((price,current) => price + current.price , 0)
+    return totalCart ,totalPrice
+}
+
 
 export const cartSlice = createSlice({
     name: 'cart',
@@ -13,7 +19,16 @@ export const cartSlice = createSlice({
     reducers : {
         addToCart :(state,action) => {
             const isExist = state.products.find(product => product._id === action.payload._id)
-            console.log(isExist)
+            if(!isExist){
+                state.products.push({...action.payload , quantity:1})
+            }else{
+                alert("Product added to cart already exist")
+            }
+
+            const totals = productCartTotals(state.products)
+            state.selectedItems = totals.totalCart
+            state.totalPrice = totals.totalPrice
+            
         }
     }
 })
