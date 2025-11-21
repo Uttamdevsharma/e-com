@@ -115,12 +115,17 @@ const Navbar = () => {
               <i className="ri-search-line text-xl md:text-2xl"></i>
             </Link>
 
-            <button className="relative text-white hover:text-yellow-300 transition-colors duration-200">
+
+            <Link to="/cart">
+            <button className="relative cursor-pointer text-white hover:text-yellow-300 transition-colors duration-200">
               <i className="ri-shopping-bag-line text-xl md:text-2xl"></i>
               <span className="absolute -top-2 -right-2 text-xs bg-yellow-300 text-black rounded-full px-1.5">
                 {cartProducts.length}
               </span>
             </button>
+            </Link>
+
+            
             <span className="relative">
               {user ? (
                 <>

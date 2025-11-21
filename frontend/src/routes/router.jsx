@@ -6,6 +6,7 @@ import CategoryPage from '../page/category/CategoryPage.jsx'
 import Login from '../components/Login.jsx'
 import Register from '../components/Register.jsx'
 import SingleProduct from '../page/shop/productDetails/SingleProduct.jsx'
+import Cart from '../page/shop/Cart.jsx'
 
 
 const router = createBrowserRouter([
@@ -24,6 +25,11 @@ const router = createBrowserRouter([
             {
                 path:'/shop/:id',
                 element: <SingleProduct/>
+
+            },
+            {
+                path:'/cart',
+                element:<Cart/>
 
             },
             {
