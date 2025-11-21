@@ -5,9 +5,13 @@ import { useLoginUserMutation } from "../redux/features/auth/authApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../redux/features/auth/authSlice";
 import toast from "react-hot-toast";
+import { loadUserCart } from "../redux/features/cart/cartSlice";
+
+// // After login success
+// dispatch(setUser(user));
+// dispatch(loadUserCart()); // <-- Restore user's cart
 
 const Login = () => {
- 
   const [message, setMessage] = useState("");
   const {
     register,
@@ -17,18 +21,24 @@ const Login = () => {
 
   const [loginUser, { isLoading, error }] = useLoginUserMutation();
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const onSubmit = async (data) => {
     try {
       const response = await loginUser(data).unwrap();
-      const {token,user} = response;
-      toast.success("Login Successfull")
-      dispatch(setUser(user))
+      const { token, user } = response;
+
+      // 1️⃣ First save user in Redux + localStorage
+      dispatch(setUser(user));
+
+      // 2️⃣ Then load previous cart
+      dispatch(loadUserCart(user._id));
+
+      toast.success("Login Successful");
       navigate("/");
     } catch (error) {
-      const errmsg = error?.data?.message  || "Something went wrong!"
-      toast.error(errmsg)
+      const errmsg = error?.data?.message || "Something went wrong!";
+      toast.error(errmsg);
     }
   };
 
@@ -65,7 +75,11 @@ const Login = () => {
 
             {message && <p className="text-red-500 font-semibold">{message}</p>}
 
-            <button type="submit" disabled={isLoading} className="w-full bg-red-500 text-white flex justify-center items-center py-2 hover:bg-red-600">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-red-500 text-white flex justify-center items-center py-2 hover:bg-red-600"
+            >
               {isLoading ? "Login..." : "Login"}
             </button>
           </form>
