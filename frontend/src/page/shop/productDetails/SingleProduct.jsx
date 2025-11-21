@@ -3,25 +3,33 @@ import { useFetchProductByIdQuery } from "../../../redux/features/products/produ
 import Loading from "../../../components/Loading";
 import StarRating from "../../../components/StarRating";
 import ReviewsCard from "../Reviews/ReviewsCard";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../../redux/features/cart/cartSlice";
 import toast from "react-hot-toast";
 
 const SingleProduct = () => {
   const { id } = useParams();
   const { data, isLoading, error } = useFetchProductByIdQuery(id);
+  const dispatch = useDispatch();
+  const {products:cartProducts}= useSelector((state) => state.cart)
 
   if (isLoading) return <Loading />;
-  if (error) return <p className="text-center text-red-500">Something went wrong!</p>;
+  if (error)
+    return <p className="text-center text-red-500">Something went wrong!</p>;
 
   const { product, reviews } = data;
 
-  const dispatch = useDispatch()
-
   // Add To Cart Logic Placeholder
   const handleAddToCart = (product) => {
-    dispatch(addToCart(product))
-    toast.success("Product added to Cart successfully")
+    const isProductExistInCart = cartProducts.find((p) => p._id === product._id)
+
+    if(!isProductExistInCart){
+      dispatch(addToCart(product))
+      toast.success("Product added to cart successfully")
+
+    }else { 
+      toast.error("Product Alredy Exist in Cart")
+    }
     
   };
 
@@ -33,17 +41,22 @@ const SingleProduct = () => {
 
         {/* Breadcrumb */}
         <p className="text-gray-600">
-          <Link to="/" className="hover:underline text-blue-600">Home</Link>
+          <Link to="/" className="hover:underline text-blue-600">
+            Home
+          </Link>
           <span className="mx-2">{">"}</span>
-          <Link to="/shop" className="hover:underline text-blue-600">Shop</Link>
+          <Link to="/shop" className="hover:underline text-blue-600">
+            Shop
+          </Link>
           <span className="mx-2">{">"}</span>
-          <span className="text-gray-800 font-medium">{product?.name || "Product"}</span>
+          <span className="text-gray-800 font-medium">
+            {product?.name || "Product"}
+          </span>
         </p>
       </div>
 
       {/* Product Content */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-        
         {/* Product Image */}
         <div className="flex justify-center">
           <img
@@ -60,9 +73,13 @@ const SingleProduct = () => {
 
           {/* Price Section */}
           <div className="flex items-center gap-3 text-xl">
-            <span className="font-bold text-gray-900">${product?.price.toFixed(2)}</span>
+            <span className="font-bold text-gray-900">
+              ${product?.price.toFixed(2)}
+            </span>
             {product?.oldPrice && (
-              <span className="line-through text-gray-400 text-lg">${product?.oldPrice.toFixed(2)}</span>
+              <span className="line-through text-gray-400 text-lg">
+                ${product?.oldPrice.toFixed(2)}
+              </span>
             )}
           </div>
 
@@ -77,7 +94,7 @@ const SingleProduct = () => {
 
           {/* 🔥 Add To Cart Button - Perfect Position */}
           <button
-            onClick={()=> handleAddToCart(product)}
+            onClick={() => handleAddToCart(product)}
             className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg shadow-md transition duration-200 w-fit"
           >
             Add To Cart
