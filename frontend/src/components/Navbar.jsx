@@ -5,13 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLogoutUserMutation } from "../redux/features/auth/authApi";
 import { logout } from "../redux/features/auth/authSlice";
 import toast from "react-hot-toast";
-
+import { clearCart } from "../redux/features/cart/cartSlice";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 
-  const {products:cartProducts} = useSelector((state)=> state.cart)
+  const { products: cartProducts } = useSelector((state) => state.cart);
   const handleToggle = () => {
     setIsDropDownOpen(!isDropDownOpen);
   };
@@ -35,22 +35,28 @@ const Navbar = () => {
   const dropdownmenus =
     user?.role === "admin" ? [...adminDropdownMenus] : [...userDropdownMenus];
 
-   const [logoutUser] = useLogoutUserMutation()
-   const dispatch = useDispatch()
-   const navigate = useNavigate()
-    const handleLogout = async() => {
-      try{
-        await logoutUser().unwrap()
-        dispatch(logout())
-        setIsDropDownOpen(false);
-        toast.success("Logout Successfully")
-        navigate('/')
+  const [logoutUser] = useLogoutUserMutation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      await logoutUser().unwrap();
 
-      }catch(err){
-        const errmsg = err?.data?.message
-        toast.error(errmsg)
-      }
+      // Log out user
+      dispatch(logout());
+
+      // CLEAR CART WHEN LOGOUT
+      dispatch(clearCart());
+      localStorage.removeItem("cartState");
+
+      setIsDropDownOpen(false);
+      toast.success("Logout Successfully");
+      navigate("/");
+    } catch (err) {
+      const errmsg = err?.data?.message;
+      toast.error(errmsg);
     }
+  };
 
   return (
     <>
@@ -115,17 +121,15 @@ const Navbar = () => {
               <i className="ri-search-line text-xl md:text-2xl"></i>
             </Link>
 
-
             <Link to="/cart">
-            <button className="relative cursor-pointer text-white hover:text-yellow-300 transition-colors duration-200">
-              <i className="ri-shopping-bag-line text-xl md:text-2xl"></i>
-              <span className="absolute -top-2 -right-2 text-xs bg-yellow-300 text-black rounded-full px-1.5">
-                {cartProducts.length}
-              </span>
-            </button>
+              <button className="relative cursor-pointer text-white hover:text-yellow-300 transition-colors duration-200">
+                <i className="ri-shopping-bag-line text-xl md:text-2xl"></i>
+                <span className="absolute -top-2 -right-2 text-xs bg-yellow-300 text-black rounded-full px-1.5">
+                  {cartProducts.length}
+                </span>
+              </button>
             </Link>
 
-            
             <span className="relative">
               {user ? (
                 <>
@@ -147,7 +151,12 @@ const Navbar = () => {
                           </li>
                         ))}
                         <li>
-                          <Link onClick={handleLogout} className="dropdown-items">Logout</Link>
+                          <Link
+                            onClick={handleLogout}
+                            className="dropdown-items"
+                          >
+                            Logout
+                          </Link>
                         </li>
                       </ul>
                     </div>

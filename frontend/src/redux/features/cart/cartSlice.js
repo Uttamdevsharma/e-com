@@ -1,21 +1,39 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
-  products: JSON.parse(localStorage.getItem("cart")) || [],
+// Load cart from localStorage
+const storedCart = JSON.parse(localStorage.getItem("cartState"));
+
+const initialState = storedCart || {
+  products: [],
   selectedItems: 0,
   totalPrice: 0,
 };
 
-const productCartTotals = (products) => {
-  const totalCart = products.reduce(
-    (total, current) => total + current.quantity,
+// Calculate total quantity & total price
+const calculateTotals = (products) => {
+  const totalQuantity = products.reduce(
+    (sum, item) => sum + item.quantity,
     0
   );
+
   const totalPrice = products.reduce(
-    (price, current) => price + current.price,
+    (sum, item) => sum + item.price * item.quantity,
     0
   );
-  return { totalCart, totalPrice };
+
+  return { totalQuantity, totalPrice };
+};
+
+// Save to localStorage
+const saveToLocalStorage = (state) => {
+  localStorage.setItem(
+    "cartState",
+    JSON.stringify({
+      products: state.products,
+      selectedItems: state.selectedItems,
+      totalPrice: state.totalPrice,
+    })
+  );
 };
 
 export const cartSlice = createSlice({
@@ -23,29 +41,83 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action) => {
-      state.products.push({ ...action.payload, quantity: 1 });
-      const totals = productCartTotals(state.products);
-      state.selectedItems = totals.totalCart;
+      const existing = state.products.find(
+        (item) => item.id === action.payload.id
+      );
+
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        state.products.push({ ...action.payload, quantity: 1 });
+      }
+
+      const totals = calculateTotals(state.products);
+      state.selectedItems = totals.totalQuantity;
       state.totalPrice = totals.totalPrice;
-      localStorage.setItem("cart", JSON.stringify(state.products));
+
+      saveToLocalStorage(state);
     },
+
     removeFromCart: (state, action) => {
-        state.products = state.products.filter(
-          (item) => item.id !== action.payload.id
-        );
-        const totals = productCartTotals(state.products);
-        state.selectedItems = totals.totalCart;
-        state.totalPrice = totals.totalPrice;
-      },
-    
-      clearCart: (state) => {
-        state.products = [];
-        state.selectedItems = 0;
-        state.totalPrice = 0;
-      },
+      state.products = state.products.filter(
+        (item) => item.id !== action.payload.id
+      );
+
+      const totals = calculateTotals(state.products);
+      state.selectedItems = totals.totalQuantity;
+      state.totalPrice = totals.totalPrice;
+
+      saveToLocalStorage(state);
+    },
+
+    clearCart: (state) => {
+      state.products = [];
+      state.selectedItems = 0;
+      state.totalPrice = 0;
+
+      localStorage.removeItem("cartState");
+    },
+
+    increaseQuantity: (state, action) => {
+      const item = state.products.find(
+        (p) => p.id === action.payload.id
+      );
+
+      if (item) {
+        item.quantity += 1;
+      }
+
+      const totals = calculateTotals(state.products);
+      state.selectedItems = totals.totalQuantity;
+      state.totalPrice = totals.totalPrice;
+
+      saveToLocalStorage(state);
+    },
+
+    decreaseQuantity: (state, action) => {
+      const item = state.products.find(
+        (p) => p.id === action.payload.id
+      );
+
+      if (item && item.quantity > 1) {
+        item.quantity -= 1;
+      }
+
+      const totals = calculateTotals(state.products);
+      state.selectedItems = totals.totalQuantity;
+      state.totalPrice = totals.totalPrice;
+
+      saveToLocalStorage(state);
+    },
   },
- 
 });
 
-export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
+export const {
+  addToCart,
+  removeFromCart,
+  clearCart,
+  increaseQuantity,
+  decreaseQuantity,
+} = cartSlice.actions;
+
 export default cartSlice.reducer;
