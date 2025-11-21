@@ -1,7 +1,19 @@
 import {  ShoppingCart } from "lucide-react"; // icon import
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { addToCart } from "../../redux/features/cart/cartSlice";
+import toast from "react-hot-toast";
 
 const ProductCards = ({ products = [] }) => {
+
+  const dispatch = useDispatch()
+
+  const addProductToCart = (product) => {
+    dispatch(addToCart(product))
+    toast.success("Product added to Cart Successfully")
+  }
+
+
   if (products.length === 0) {
     return (
       <div className="text-center text-gray-600 text-lg mt-16">
@@ -41,7 +53,7 @@ const ProductCards = ({ products = [] }) => {
             )}
 
             {/* Right Side - Cart Icon */}
-            <button
+            <button onClick={()=> addProductToCart(product) }
               className="absolute top-3 right-3 bg-white/90 hover:bg-pink-600 hover:text-white text-gray-700 p-2 rounded-full shadow-md transition-all duration-300"
               title="Add to Cart"
             >
