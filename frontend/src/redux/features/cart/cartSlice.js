@@ -31,8 +31,49 @@ const saveToLocalStorage = (userId, state) => {
   }
 };
 
+const GUEST_CART_KEY = "cart_guest";
+
+// Helper: Load guest cart from localStorage
+const loadGuestCartFromLocalStorage = () => {
+  try {
+    const storedCart = localStorage.getItem(GUEST_CART_KEY);
+    return storedCart ? JSON.parse(storedCart) : null;
+  } catch (error) {
+    console.error("Error loading guest cart from localStorage:", error);
+    return null;
+  }
+};
+
+// Helper: Save guest cart to localStorage
+const saveGuestCartToLocalStorage = (state) => {
+  try {
+    localStorage.setItem(
+      GUEST_CART_KEY,
+      JSON.stringify({
+        products: state.products,
+        selectedItems: state.selectedItems,
+        totalPrice: state.totalPrice,
+      })
+    );
+  } catch (error) {
+    console.error("Guest cart save error:", error);
+  }
+};
+
+// Helper: Clear guest cart from localStorage
+const clearGuestCartFromLocalStorage = () => {
+  try {
+    localStorage.removeItem(GUEST_CART_KEY);
+  } catch (error) {
+    console.error("Error clearing guest cart from localStorage:", error);
+  }
+};
+
 // Initial State
-const initialState = {
+// Attempt to load guest cart if no user is logged in
+const initialCartState = loadGuestCartFromLocalStorage();
+
+const initialState = initialCartState || {
   products: [],
   selectedItems: 0,
   totalPrice: 0,
@@ -74,7 +115,11 @@ export const cartSlice = createSlice({
       state.totalPrice = totals.totalPrice;
 
       const userId = getUserIdFromLocalStorage();
-      saveToLocalStorage(userId, state);
+      if (userId) {
+        saveToLocalStorage(userId, state);
+      } else {
+        saveGuestCartToLocalStorage(state);
+      }
     },
 
     removeFromCart: (state, action) => {
@@ -82,8 +127,13 @@ export const cartSlice = createSlice({
       const totals = calculateTotals(state.products);
       state.selectedItems = totals.totalQuantity;
       state.totalPrice = totals.totalPrice;
+
       const userId = getUserIdFromLocalStorage();
-      saveToLocalStorage(userId, state);
+      if (userId) {
+        saveToLocalStorage(userId, state);
+      } else {
+        saveGuestCartToLocalStorage(state);
+      }
     },
 
     clearCart: (state) => {
@@ -92,7 +142,11 @@ export const cartSlice = createSlice({
       state.totalPrice = 0;
 
       const userId = getUserIdFromLocalStorage();
-      if (userId) localStorage.removeItem(`cart_${userId}`);
+      if (userId) {
+        localStorage.removeItem(`cart_${userId}`);
+      } else {
+        clearGuestCartFromLocalStorage();
+      }
     },
 
     increaseQuantity: (state, action) => {
@@ -104,7 +158,11 @@ export const cartSlice = createSlice({
       state.totalPrice = totals.totalPrice;
 
       const userId = getUserIdFromLocalStorage();
-      saveToLocalStorage(userId, state);
+      if (userId) {
+        saveToLocalStorage(userId, state);
+      } else {
+        saveGuestCartToLocalStorage(state);
+      }
     },
 
     decreaseQuantity: (state, action) => {
@@ -116,22 +174,54 @@ export const cartSlice = createSlice({
       state.totalPrice = totals.totalPrice;
 
       const userId = getUserIdFromLocalStorage();
-      saveToLocalStorage(userId, state);
+      if (userId) {
+        saveToLocalStorage(userId, state);
+      } else {
+        saveGuestCartToLocalStorage(state);
+      }
+    },
+
+    setCart: (state, action) => {
+      state.products = action.payload.products;
+      state.selectedItems = action.payload.selectedItems;
+      state.totalPrice = action.payload.totalPrice;
     },
 
     // Call this **after login** to restore user's previous cart
     loadUserCart: (state, action) => {
       const userId = action.payload; // userId is passed as payload
-      const storedCart = loadCartFromLocalStorage(userId);
-      if (storedCart) {
-        state.products = storedCart.products;
-        state.selectedItems = storedCart.selectedItems;
-        state.totalPrice = storedCart.totalPrice;
-      } else {
-        state.products = [];
-        state.selectedItems = 0;
-        state.totalPrice = 0;
+      const userCart = loadCartFromLocalStorage(userId);
+      const guestCart = loadGuestCartFromLocalStorage();
+
+      let mergedProducts = [];
+
+      if (userCart && userCart.products.length > 0) {
+        mergedProducts = [...userCart.products];
       }
+
+      if (guestCart && guestCart.products.length > 0) {
+        guestCart.products.forEach(guestItem => {
+          const existingUserItemIndex = mergedProducts.findIndex(item => item.id === guestItem.id);
+          if (existingUserItemIndex !== -1) {
+            // If item exists in user cart, merge quantities
+            mergedProducts[existingUserItemIndex].quantity += guestItem.quantity;
+          } else {
+            // Add unique guest item
+            mergedProducts.push(guestItem);
+          }
+        });
+      }
+
+      const totals = calculateTotals(mergedProducts);
+      state.products = mergedProducts;
+      state.selectedItems = totals.totalQuantity;
+      state.totalPrice = totals.totalPrice;
+
+      // Save the merged cart to the user's localStorage
+      saveToLocalStorage(userId, state);
+
+      // Clear the guest cart
+      clearGuestCartFromLocalStorage();
     },
   },
 });
@@ -143,6 +233,7 @@ export const {
   increaseQuantity,
   decreaseQuantity,
   loadUserCart,
+  setCart,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;
