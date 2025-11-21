@@ -11,6 +11,7 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 
+  const {products:cartProducts} = useSelector((state)=> state.cart)
   const handleToggle = () => {
     setIsDropDownOpen(!isDropDownOpen);
   };
@@ -117,7 +118,7 @@ const Navbar = () => {
             <button className="relative text-white hover:text-yellow-300 transition-colors duration-200">
               <i className="ri-shopping-bag-line text-xl md:text-2xl"></i>
               <span className="absolute -top-2 -right-2 text-xs bg-yellow-300 text-black rounded-full px-1.5">
-                0
+                {cartProducts.length}
               </span>
             </button>
             <span className="relative">

@@ -2,7 +2,7 @@ import { ShoppingCart } from "lucide-react"; // icon import
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { addToCart } from "../../redux/features/cart/cartSlice";
-import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 
 const ProductCards = ({ products = [] }) => {
   const dispatch = useDispatch();
@@ -13,9 +13,20 @@ const ProductCards = ({ products = [] }) => {
 
     if (!isExist) {
       dispatch(addToCart(product));
-      toast.success("Product added to cart Successfully");
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Product Added to cart Successfully",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     } else {
-      toast.error("Product already Exist in Cart");
+      Swal.fire({
+        icon: "error",
+        title: "Product Already Exist in Cart",
+        text: "",
+        footer: '<a href="#">Why do I have this issue?</a>',
+      });
     }
   };
 

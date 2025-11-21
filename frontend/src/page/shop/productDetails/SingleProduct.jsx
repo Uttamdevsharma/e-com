@@ -5,7 +5,8 @@ import StarRating from "../../../components/StarRating";
 import ReviewsCard from "../Reviews/ReviewsCard";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../../redux/features/cart/cartSlice";
-import toast from "react-hot-toast";
+import Swal from 'sweetalert2';
+
 
 const SingleProduct = () => {
   const { id } = useParams();
@@ -25,10 +26,21 @@ const SingleProduct = () => {
 
     if(!isProductExistInCart){
       dispatch(addToCart(product))
-      toast.success("Product added to cart successfully")
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Product Added to cart Successfully",
+        showConfirmButton: false,
+        timer: 1500
+      });
 
     }else { 
-      toast.error("Product Alredy Exist in Cart")
+      Swal.fire({
+        icon: "error",
+        title: "Product Already Exist in Cart",
+        text: "",
+        footer: '<a href="#">Why do I have this issue?</a>'
+      });
     }
     
   };
