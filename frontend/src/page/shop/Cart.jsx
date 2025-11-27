@@ -15,12 +15,28 @@ const Cart = () => {
     (state) => state.cart
   );
 
+  const {user} = useSelector((state) => state.auth)
+
+
+
   // Clear Cart Handler (With confirmation - professional)
   const handleClearCart = () => {
     if (window.confirm("Are you sure you want to clear your entire cart?")) {
       dispatch(clearCart());
     }
   };
+
+
+  //hanle payment
+  const makePayment = async(e) => {
+    
+    const body = {
+      products: products,
+      userId: user?._id
+    }
+    console.log(body)
+    
+  }
 
   return (
     <div className="pt-28 px-5 md:px-20 pb-20">
@@ -101,7 +117,7 @@ const Cart = () => {
           )}
         </div>
 
-        {/* RIGHT SIDE - ORDER SUMMARY */}
+      
         {/* RIGHT SIDE - ORDER SUMMARY */}
         <div className="bg-white p-6 shadow-lg rounded-xl border border-gray-100 h-fit w-full">
           {/* Title */}
@@ -170,7 +186,11 @@ const Cart = () => {
               Clear Cart
             </button >
 
-            <button onClick={} className="w-full py-2 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 transition">
+            <button onClick={(e) => {
+              e.stopPropagation()
+              makePayment()
+
+            }} className="w-full py-2 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 transition">
               Proceed To Checkout
             </button>
           </div>
