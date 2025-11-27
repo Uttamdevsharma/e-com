@@ -168,9 +168,9 @@ const Cart = () => {
               className="w-full py-2 rounded-lg font-medium border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition"
             >
               Clear Cart
-            </button>
+            </button >
 
-            <button className="w-full py-2 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 transition">
+            <button onClick={} className="w-full py-2 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 transition">
               Proceed To Checkout
             </button>
           </div>
