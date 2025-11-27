@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import axios from 'axios'
+import axios from "axios";
 import {
   clearCart,
   removeFromCart,
@@ -10,9 +10,6 @@ import {
 import { loadStripe } from "@stripe/stripe-js";
 import { getBaseUrl } from "../../utils/gateBaseUrl";
 
-
-
-
 const Cart = () => {
   const [showDiscount, setShowDiscount] = useState(false);
 
@@ -21,9 +18,7 @@ const Cart = () => {
     (state) => state.cart
   );
 
-  const {user} = useSelector((state) => state.auth)
-
-
+  const { user } = useSelector((state) => state.auth);
 
   // Clear Cart Handler (With confirmation - professional)
   const handleClearCart = () => {
@@ -32,37 +27,34 @@ const Cart = () => {
     }
   };
 
-
   //hanle payment
-  const makePayment = async(e) => {
-    const stripe =await loadStripe(import.meta.env.VITE_STRIPE_PK);
-  
+  const makePayment = async (e) => {
+    const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PK);
+
     const body = {
       products: products,
-      userId: user?._id
-    }
+      userId: user?._id,
+    };
 
-    const response = await axios.post(`${getBaseUrl}/api/orders/create-checkout-session`,
-      body, {
-        headers: {
-          'Content-Type' : 'application/json'
+    try{
+      const response = await axios.post(
+        `${getBaseUrl()}/api/orders/create-checkout-session`,
+        body,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-      }
-    )
+      );
+  
+      window.location.href = response.data.url;
 
-    console.log(response.data)
-
-   
-
-    
-
-
-
-
-    
-    
+    }catch(error){
+      console.error(error)
+    }
   }
 
+    
   return (
     <div className="pt-28 px-5 md:px-20 pb-20">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -142,7 +134,6 @@ const Cart = () => {
           )}
         </div>
 
-      
         {/* RIGHT SIDE - ORDER SUMMARY */}
         <div className="bg-white p-6 shadow-lg rounded-xl border border-gray-100 h-fit w-full">
           {/* Title */}
@@ -209,13 +200,15 @@ const Cart = () => {
               className="w-full py-2 rounded-lg font-medium border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition"
             >
               Clear Cart
-            </button >
+            </button>
 
-            <button onClick={(e) => {
-              e.stopPropagation()
-              makePayment()
-
-            }} className="w-full py-2 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 transition">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                makePayment();
+              }}
+              className="w-full py-2 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 transition"
+            >
               Proceed To Checkout
             </button>
           </div>
