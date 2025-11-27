@@ -1,11 +1,17 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import axios from 'axios'
 import {
   clearCart,
   removeFromCart,
   increaseQuantity,
   decreaseQuantity,
 } from "../../redux/features/cart/cartSlice";
+import { loadStripe } from "@stripe/stripe-js";
+import { getBaseUrl } from "../../utils/gateBaseUrl";
+
+
+
 
 const Cart = () => {
   const [showDiscount, setShowDiscount] = useState(false);
@@ -29,12 +35,31 @@ const Cart = () => {
 
   //hanle payment
   const makePayment = async(e) => {
-    
+    const stripe =await loadStripe(import.meta.env.VITE_STRIPE_PK);
+  
     const body = {
       products: products,
       userId: user?._id
     }
-    console.log(body)
+
+    const response = await axios.post(`${getBaseUrl}/api/orders/create-checkout-session`,
+      body, {
+        headers: {
+          'Content-Type' : 'application/json'
+        }
+      }
+    )
+
+    console.log(response.data)
+
+   
+
+    
+
+
+
+
+    
     
   }
 
