@@ -32,6 +32,11 @@ const PaymentRequest = async (req, res) => {
   }
 };
 
+const confirmPayment = async(req,res) => {
+  
+}
+
+
 module.exports = {
   PaymentRequest,
 };
