@@ -5,7 +5,6 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const PaymentRequest = async (req, res) => {
   const { products, userId } = req.body;
-
   try {
     const line_items = products.map((product) => ({
       price_data: {
