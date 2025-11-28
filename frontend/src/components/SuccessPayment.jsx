@@ -117,10 +117,10 @@ const SuccessPayment = () => {
               </span>
             </div>
             {/* Display total if available */}
-            {order.total && (
+            {order.amount && (
                 <div className="flex justify-between pt-3 border-t mt-3">
                     <span className="text-gray-700 font-bold">Order Total:</span>
-                    <span className="text-lg font-bold text-gray-900">${order.total.toFixed(2)}</span>
+                    <span className="text-lg font-bold text-gray-900">${order.amount.toFixed(2)}</span>
                 </div>
             )}
             {/* Display Updated At */}

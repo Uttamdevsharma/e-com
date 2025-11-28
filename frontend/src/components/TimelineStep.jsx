@@ -24,6 +24,7 @@ const TimelineStep = ({ step, order, isCompleted, isCurrent, icon, description }
     return (
         // ms-6 pushes the item content over, creating space for the vertical line from parent <ol>
         <li className="mb-10 ms-6"> 
+        
             {/* The Circle/Dot on the Line */}
             <span className={`absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 
                 ${iconBgColor} ${iconTextColor} shadow-md transition-all duration-300`}>
