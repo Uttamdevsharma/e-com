@@ -14,29 +14,31 @@ const Cart = () => {
   const [showDiscount, setShowDiscount] = useState(false);
 
   const dispatch = useDispatch();
-  const { products, selectedItems, totalPrice } = useSelector(
-    (state) => state.cart
-  );
-
+  const { products, totalPrice } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.auth);
 
-  // Clear Cart Handler (With confirmation - professional)
+  // Clear Cart Handler
   const handleClearCart = () => {
     if (window.confirm("Are you sure you want to clear your entire cart?")) {
       dispatch(clearCart());
     }
   };
 
-  //hanle payment
-  const makePayment = async (e) => {
+  // Handle Stripe Payment
+  const makePayment = async () => {
+    if (!user?._id || !user?.email) {
+      return alert("You must be logged in to proceed with payment!");
+    }
+
     const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PK);
 
     const body = {
       products: products,
-      userId: user?._id,
+      userId: user._id,      // <-- send userId
+      email: user.email,     // <-- send email
     };
 
-    try{
+    try {
       const response = await axios.post(
         `${getBaseUrl()}/api/orders/create-checkout-session`,
         body,
@@ -46,15 +48,14 @@ const Cart = () => {
           },
         }
       );
-  
+
+      // Redirect user to Stripe Checkout
       window.location.href = response.data.url;
-
-    }catch(error){
-      console.error(error)
+    } catch (error) {
+      console.error("Payment initiation failed:", error);
     }
-  }
+  };
 
-    
   return (
     <div className="pt-28 px-5 md:px-20 pb-20">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -75,53 +76,38 @@ const Cart = () => {
                 key={item.id}
                 className="flex justify-between items-center border-b pb-4 mb-4"
               >
-                {/* Product Info */}
                 <div className="flex items-center gap-4">
                   <img
                     src={item.image}
                     alt={item.name}
                     className="w-20 h-20 rounded-lg object-cover border"
                   />
-
                   <div>
                     <h3 className="font-semibold text-lg">{item.name}</h3>
                     <p className="text-gray-600 text-lg font-bold">
                       ৳ {(item.price * item.quantity).toLocaleString()}
                     </p>
-                    <p className="text-gray-500 text-sm">
-                      Sold by: Official Seller
-                    </p>
+                    <p className="text-gray-500 text-sm">Sold by: Official Seller</p>
                   </div>
                 </div>
 
-                {/* Quantity & Remove */}
                 <div className="flex flex-col items-end">
-                  {/* Quantity Buttons */}
                   <div className="flex items-center mb-2">
                     <button
-                      onClick={() =>
-                        dispatch(decreaseQuantity({ id: item.id }))
-                      }
+                      onClick={() => dispatch(decreaseQuantity({ id: item.id }))}
                       className="px-3 py-1 border rounded-l hover:bg-gray-100 transition-all"
                     >
                       –
                     </button>
-
-                    <span className="px-4 py-1 border-t border-b">
-                      {item.quantity}
-                    </span>
-
+                    <span className="px-4 py-1 border-t border-b">{item.quantity}</span>
                     <button
-                      onClick={() =>
-                        dispatch(increaseQuantity({ id: item.id }))
-                      }
+                      onClick={() => dispatch(increaseQuantity({ id: item.id }))}
                       className="px-3 py-1 border rounded-r hover:bg-gray-100 transition-all"
                     >
                       +
                     </button>
                   </div>
 
-                  {/* Remove Button */}
                   <button
                     onClick={() => dispatch(removeFromCart({ id: item.id }))}
                     className="text-red-500 hover:text-red-700 text-sm transition-all"
@@ -136,10 +122,8 @@ const Cart = () => {
 
         {/* RIGHT SIDE - ORDER SUMMARY */}
         <div className="bg-white p-6 shadow-lg rounded-xl border border-gray-100 h-fit w-full">
-          {/* Title */}
           <h2 className="text-2xl font-semibold mb-5">Order Summary</h2>
 
-          {/* Apply Discount Code */}
           <div className="border-b border-gray-200 py-3 cursor-pointer">
             <div
               className="flex justify-between items-center hover:bg-gray-50 transition"
@@ -149,7 +133,6 @@ const Cart = () => {
               <span className="text-gray-500 text-xl">&gt;</span>
             </div>
 
-            {/* Discount Input (UI Only) */}
             {showDiscount && (
               <div className="mt-3 flex gap-2">
                 <input
@@ -164,20 +147,16 @@ const Cart = () => {
             )}
           </div>
 
-          {/* Use Club Points */}
           <div className="border-b border-gray-200 py-3 flex justify-between items-center cursor-pointer hover:bg-gray-50 transition">
             <span className="text-gray-700">Use Club Points</span>
             <span className="text-gray-500 text-xl">&gt;</span>
           </div>
 
-          {/* Cart Subtotal */}
           <div className="mt-6">
             <h3 className="text-lg font-semibold mb-2">Cart Subtotal</h3>
-
             <div className="flex justify-between text-gray-600 mb-2">
               <span>
-                Subtotal ({products.length} item{products.length > 1 ? "s" : ""}
-                )
+                Subtotal ({products.length} item{products.length > 1 ? "s" : ""})
               </span>
               <span>৳ {totalPrice.toLocaleString()}</span>
             </div>
@@ -193,10 +172,9 @@ const Cart = () => {
             </div>
           </div>
 
-          {/* Buttons - More Professional */}
           <div className="mt-6 space-y-3">
             <button
-              onClick={() => dispatch(clearCart())}
+              onClick={handleClearCart}
               className="w-full py-2 rounded-lg font-medium border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition"
             >
               Clear Cart

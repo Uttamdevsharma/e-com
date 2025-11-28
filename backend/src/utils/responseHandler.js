@@ -2,7 +2,7 @@ const sendSuccess = (res, statusCode, message, data = {}) => {
     res.status(statusCode).send({
       success: true,
       message,
-      ...data
+      data: data
     });
   };
   
