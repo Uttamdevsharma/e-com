@@ -70,14 +70,19 @@ const clearGuestCartFromLocalStorage = () => {
 };
 
 // Initial State
-// Attempt to load guest cart if no user is logged in
-const initialCartState = loadGuestCartFromLocalStorage();
-
-const initialState = initialCartState || {
-  products: [],
-  selectedItems: 0,
-  totalPrice: 0,
+const getInitialCartState = () => {
+  const guestCart = loadGuestCartFromLocalStorage();
+  if (guestCart && Array.isArray(guestCart.products) && guestCart.selectedItems !== undefined && guestCart.totalPrice !== undefined) {
+    return guestCart;
+  }
+  return {
+    products: [],
+    selectedItems: 0,
+    totalPrice: 0,
+  };
 };
+
+const initialState = getInitialCartState();
 
 // Calculate totals
 const calculateTotals = (products) => {

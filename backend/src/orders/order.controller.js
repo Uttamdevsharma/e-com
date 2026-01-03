@@ -4,6 +4,7 @@ const Order = require("./oreder.model");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // Create Stripe Checkout Session
+// Handles checkout button click: creates Stripe Checkout session and returns session URL for frontend redirect
 const PaymentRequest = async (req, res) => {
   const { products, userId, email } = req.body; // frontend থেকে userId & email নিয়ে আসা
 
@@ -43,6 +44,8 @@ const PaymentRequest = async (req, res) => {
   }
 };
 
+
+
 // Confirm Payment after success
 const confirmPayment = async (req, res) => {
   const { session_id } = req.body;
@@ -63,6 +66,7 @@ const confirmPayment = async (req, res) => {
     // Check if order already exists
     let order = await Order.findOne({ orderId: paymentIntentId });
     console.log("Existing order:", order);
+
 
     if (!order) {
       const lineItems = session.line_items.data.map((item) => ({
@@ -102,7 +106,154 @@ const confirmPayment = async (req, res) => {
   }
 };
 
+
+//get orders by email address
+const getOrdersByEmail = async(req,res) => {
+  const email = req.params.email;
+
+  try {
+    if(!email){
+      return sendError(res,400,"Email is required")
+    }
+
+    const orders = await Order.find({email : email}).sort({createdAt: -1})
+
+    if(orders.length === 0 || !orders) {
+      return sendError(res,404,"No orders found For this email")
+    }
+    return sendSuccess(res,200,"Orders fetched successfully",orders)
+
+  }catch(error) {
+    return sendSuccess(res,500,"Failed to get orders",error)
+  }
+
+}
+
+//get order by orderId
+const getOrdersByOrderId = async(req,res) => {
+  const id = req.params.id
+
+  try{
+    const order = await Order.findById(id)
+
+    if(!order){
+      return sendError(res,404,"not found this order")
+    }
+
+    return sendSuccess(res,200,"Order Fetched SuccessFully",order)
+
+
+  }catch(err) {
+    return sendError(res,500,"order not Fetched successfully",err)
+  }
+}
+
+
+const getAllOrders = async(req,res) => {
+
+  try{
+    const orders = await Order.find().sort({createdAt : -1})
+    if(orders.length === 0 || !orders){
+      return sendError(res,404,"No orders found")
+    }
+
+    return sendSuccess(res,200,"Order Fetch successFully",orders)
+  }catch(err){
+    sendError(res,500,"Failed to get all orders",err)
+  }
+}
+
+
+
+const updateOrderStatus = async(req,res) => {
+
+  const {id} = req.params
+  const {status} = req.body
+
+  try{
+    if(!status){
+      return sendError(res,400,"status is required")
+    }
+
+
+  const updateOrder = await Order.findByIdAndUpdate(id, {status , updateAt: Date.now()},{
+      new:true,
+      runValidators : true,
+    })
+
+    if(!updateOrder){
+    return sendError(res,404,"Order not found")
+    }
+
+    return sendSuccess(res,200,"Order update successfully",updateOrder)
+
+  }catch(err){
+    sendError(res,500,"Failed to update",err)
+  }
+}
+
+
 module.exports = {
   PaymentRequest,
   confirmPayment,
+  getOrdersByEmail,
+  getOrdersByOrderId,
+  getAllOrders,
+  updateOrderStatus
 };
+
+
+
+
+
+
+
+
+
+// PaymentRequest controller execution
+
+// ইউজার Checkout button ক্লিক করলে execute হবে।
+
+// এখানে Stripe Checkout session তৈরি হবে।
+
+// success_url সেট করা থাকবে, যেখানে {CHECKOUT_SESSION_ID} থাকবে।
+
+// Frontend redirect
+
+// Session URL দিয়ে ইউজারকে Stripe page এ পাঠানো হবে।
+
+// Payment success
+
+// পেমেন্ট successful হলে success_url এ redirect হবে।
+
+// URL থেকে আমরা session_id পাবো।
+
+// ConfirmPayment controller
+
+// Session ID নিয়ে Stripe থেকে session retrieve করা হবে।
+
+// এখানে থাকবে products, user, quantity, total_amount, payment_intent id।
+
+// Order check
+
+// Payment intent ID দিয়ে দেখবো DB তে order আছে কিনা।
+
+// যদি order থাকে → নতুন order তৈরি হবে না, শুধু status update করা হবে।
+
+// যদি order না থাকে → নতুন order তৈরি করা হবে।
+
+// Order create
+
+// lineItems তৈরি হবে → প্রতিটি product এর ID এবং quantity।
+
+// amount → session.amount_total / 100
+
+// userId → session.metadata.userId
+
+// email → session.customer_details.email অথবা metadata.email
+
+// Save order
+
+// সব data নিয়ে order DB তে save করা হবে।
+
+// আর duplicate order হবে না।
