@@ -131,6 +131,7 @@ const getOrdersByEmail = async(req,res) => {
 
 //get order by orderId
 const getOrdersByOrderId = async(req,res) => {
+  
   const id = req.params.id
 
   try{
@@ -150,7 +151,7 @@ const getOrdersByOrderId = async(req,res) => {
 
 
 const getAllOrders = async(req,res) => {
-  
+
 
   try{
     const orders = await Order.find().sort({createdAt : -1})
