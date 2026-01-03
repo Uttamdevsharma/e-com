@@ -39,16 +39,18 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleLogout = async () => {
-    try {
-      await logoutUser().unwrap();
-
-      // Log out user
-      dispatch(logout());
-
-      // CLEAR CART WHEN LOGOUT
-      dispatch(clearCart());
-      localStorage.removeItem("cartState");
-
+          // Clear localStorage accessToken immediately
+          localStorage.removeItem("accessToken");
+    
+          try {
+            await logoutUser().unwrap();
+    
+            // Log out user
+            dispatch(logout());
+    
+            // CLEAR CART WHEN LOGOUT
+            dispatch(clearCart());
+            localStorage.removeItem("cartState");
       setIsDropDownOpen(false);
       toast.success("Logout Successfully");
       navigate("/");

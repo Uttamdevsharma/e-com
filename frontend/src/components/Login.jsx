@@ -25,11 +25,15 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await loginUser(data).unwrap();
-      const { token, user } = response;
+                const response = await loginUser(data).unwrap();
+                console.log("Full login response:", response);
+                const { accessToken, user } = response.data; // Access data property if sendSuccess wraps it
 
       // 1️⃣ First save user in Redux + localStorage
       dispatch(setUser(user));
+      localStorage.setItem("accessToken", accessToken);
+      console.log("Login successful! Access Token:", accessToken);
+      console.log("Logged in user:", user);
 
       // 2️⃣ Then load previous cart
       dispatch(loadUserCart(user._id));

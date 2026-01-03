@@ -10,10 +10,11 @@ import Swal from 'sweetalert2';
 
 const SingleProduct = () => {
   const { id } = useParams();
-  const { data, isLoading, error } = useFetchProductByIdQuery(id);
+  const { data, isLoading, error } = useFetchProductByIdQuery(id, { skip: !id });
   const dispatch = useDispatch();
   const {products:cartProducts}= useSelector((state) => state.cart)
 
+  if (!id) return <p className="text-center text-red-500">Product ID is missing.</p>;
   if (isLoading) return <Loading />;
   if (error)
     return <p className="text-center text-red-500">Something went wrong!</p>;

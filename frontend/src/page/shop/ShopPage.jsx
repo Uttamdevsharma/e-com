@@ -22,10 +22,14 @@ const ShopPage = () => {
     color: "all",
     priceRange: "",
   });
+  const [productsPerPage] = useState(8);
 
   const { category, color, priceRange } = filtersState;
-  const [minPrice, maxPrice] = priceRange.split("-").map(Number);
-  const [productsPerPage] = useState(8);
+
+  // Safely get minPrice and maxPrice from filtersState
+  const priceRangeValues = priceRange.split("-").map(Number);
+  const minPrice = isNaN(priceRangeValues[0]) ? 0 : priceRangeValues[0];
+  const maxPrice = isNaN(priceRangeValues[1]) ? "" : priceRangeValues[1];
 
   const { data, error, isLoading } = useFetchAllProductsQuery({
     category: category !== "all" ? category : "",
@@ -38,8 +42,15 @@ const ShopPage = () => {
 
   if (isLoading) return <Loading/>
   if (error) return <p>Something went wrong</p>;
+  console.log("Fetched products data:", data);
 
-  const { products, totalPages, totalProducts } = data;
+  // Safely destructure data, providing default empty values if data is undefined or null
+  const { products = [], totalPages = 1, totalProducts = 0 } = data?.data || {};
+
+  // const priceRangeValues = filtersState.priceRange.split("-").map(Number); // Duplicated declaration - REMOVED
+  // const minPrice = isNaN(priceRangeValues[0]) ? 0 : priceRangeValues[0]; // Duplicated declaration - REMOVED
+  // const maxPrice = isNaN(priceRangeValues[1]) ? "" : priceRangeValues[1]; // Duplicated declaration - REMOVED
+
 
   const handlePageChange = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {

@@ -1,12 +1,10 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { getBaseUrl } from "../../../utils/gateBaseUrl";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import baseQuery from "../../apiBase";
+
 
 const productApi = createApi({
   reducerPath: "productsApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: `${getBaseUrl()}/api/products`,
-    credentials: "include",
-  }),
+  baseQuery: baseQuery,
   tagTypes: ["Products"],
   endpoints: (builder) => ({
     //fetch product by query 
@@ -27,7 +25,7 @@ const productApi = createApi({
             page: page.toString(),
             limit: limit.toString(),
           });
-          return `?${queryParams.toString()}`;
+          return `/api/products?${queryParams.toString()}`;
         },
         providesTags: ["Products"],
       }),
@@ -35,14 +33,14 @@ const productApi = createApi({
 
     //fetch product by id
     fetchProductById : builder.query({
-        query: (id) => `${id}`,
+        query: (id) => `/api/products/${id}`,
         providesTags:['Products']
     }),
 
     //add a product
     AddProduct : builder.mutation({
         query: (newProduct) => ({
-            url: '/create-product',
+            url: '/api/products/create-product',
             method: 'POST',
             body: newProduct
         }),
@@ -53,7 +51,7 @@ const productApi = createApi({
     //update a product
     UpdateProduct: builder.mutation({
             query: ({id, ...rest}) => ({
-                url: `/update-product/ ${id}`,
+                url: `/api/products/update-product/${id}`,
                 method: 'PATCH',
                 body : rest
             }),
@@ -65,7 +63,7 @@ const productApi = createApi({
     //delete a product
     DeleteProduct: builder.mutation({
         query : (id) =>( {
-            url: `/${id}`,
+            url: `/api/products/${id}`,
             method: 'DELETE',
 
         }),
